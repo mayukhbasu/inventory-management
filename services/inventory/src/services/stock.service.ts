@@ -23,10 +23,13 @@ export class StockService{
 
     try {
         const res = await query(sql, [productID, quantity]);
-        logger.error(res)
-        if (res.rowCount === 0) {
-            throw new Error('Product not found or quantity update failed.');
+        logger.debug(res);
+        const checkSQL = 'select quantity from stocklevels where productID = $1';
+        const checkRes = await query(checkSQL, [productID]);
+        if (checkRes.rows.length > 0 && checkRes.rows[0].quantity <= 0) {
+          throw new Error(`Quantity update results in invalid stock level for product ${productID}.`);
         }
+        logger.info(`Stock updated for product ${productID}, quantity ${quantity}, type ${type}`);
         return `Stock updated for product ${productID}, quantity ${quantity}, type ${type}`;
     } catch (err) {
         throw new Error(`An error occurred: ${err}`);
@@ -40,6 +43,19 @@ export class StockService{
       const currentStock = result.rows[0].quantity;
       logger.info(currentStock);
       return {productID, currentStock}
+    } catch(err) {
+      logger.error(err)
+      throw new Error(`An error occurred: ${err}`);
+    }
+  }
+
+  static async getAlertNewStock(): Promise<productStock[]> {
+    logger.info('Inside getStockLevel function of StockModel');
+    try  {
+      const result = await query('select p.name, s.quantity from products p join stocklevels s on p.productId = s.productId where s.quantity < p.lowstockthreshold');
+      const alertStocks = result.rows;
+      logger.info(alertStocks);
+      return alertStocks;
     } catch(err) {
       logger.error(err)
       throw new Error(`An error occurred: ${err}`);
