@@ -1,9 +1,0 @@
-{
-  "compilerOptions": {
-    "outDir": "./dist", // Output directory for all emitted files
-    "declaration": true, // Generates corresponding '.d.ts' file
-    "rootDir": "./src" // Specifies the root directory of input files
-  },
-  "include": ["src/**/*"], // Include all files in the src directory
-  "exclude": ["node_modules", "**/*.spec.ts"] // Common exclude patterns
-}
