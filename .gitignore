@@ -1,2 +1,2 @@
-services/inventory/node_modules
-/node_modules
+services/inventory/node_modules/
+node_modules/
