@@ -1,11 +1,13 @@
 import express from 'express';
-import { greet } from "myLib";
+import { query } from './config/db';
+
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.get('/', (req, res) => {
-  res.send(greet('World'));
+app.get('/', async (req, res) => {
+  const result = await query('SELECT NOW() as now');
+  res.json({ currentTime: result.rows[0].now });
 });
 
 
