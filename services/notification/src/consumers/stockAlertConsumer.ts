@@ -17,7 +17,7 @@ export async function startConsumer() {
     if(msg) {
       const contentAsString = msg.content.toString();
       const contentAsJSON = JSON.parse(contentAsString);
-      console.log(contentAsJSON);
+      logger.info(contentAsJSON);
       await insertProductsInChunks(contentAsJSON);
       logger.info(`Consumer Logs are ${JSON.stringify(contentAsJSON)}`);
       channel.ack(msg);

@@ -1,6 +1,9 @@
 import { pool, query } from "../config/db";
 import logger from "../logger";
 import * as amqp from 'amqplib';
+import dotenv from "dotenv";
+
+dotenv.config();
 
 
 type stockType = 'order' | 'receipt';
@@ -74,8 +77,21 @@ export class StockService{
       if(alertStocks.length > 0) {
         const connection = await amqp.connect(process.env.AMQP_URL|| 'amqp://localhost');
         const channel = await connection.createChannel();
-        const queue = 'stock_alerts';
-        await channel.assertQueue(queue, {durable: false});
+        const dlx = process.env.DEAD_LETTER_EXCHANGE as string;
+        const dlQueue = process.env.DEAD_LETTER_QUEUE as string;
+        const dlRoutingKey = 'error'; // Dead Letter Routing Key
+        await channel.assertExchange(dlx, 'direct', {durable: true});
+        await channel.assertQueue(dlQueue, {durable: true});
+        await channel.bindQueue(dlQueue, dlx, dlRoutingKey);
+
+        const queue = process.env.MAIN_QUEUE as string;
+        await channel.assertQueue(queue, {
+          durable: false,
+          arguments: {
+            'x-dead-letter-exchange': dlx, // Specify the DLX
+            'x-dead-letter-routing-key': dlRoutingKey // Optional: Specify a routing key for the DLX
+          }
+        });
         const message = JSON.stringify(alertStocks);
         logger.info(message);
         channel.sendToQueue(queue, Buffer.from(message));
