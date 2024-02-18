@@ -3,6 +3,10 @@ import * as amqp from 'amqplib';
 import logger from '../logger';
 import { pool } from '../utils/amqpHelper';
 
+import dotenv from "dotenv";
+
+dotenv.config();
+
 type Product = {
   name: string,
   quantity: number
@@ -10,19 +14,24 @@ type Product = {
 
 export async function startConsumer() {
   const connection = await amqp.connect(process.env.AMQP_URL || 'amqp://localhost');
-  const channel = await connection.createChannel();
-  const queue = 'stock_alerts';
-  await channel.assertQueue(queue, {durable: false});
-  channel.consume(queue, async(msg) => {
+  const channel = connection.createChannel();
+  const topicExchange = process.env.TOPIC_EXCHANGE as string;
+  const routingKey = 'stock.alert.#';
+  (await channel).assertExchange(topicExchange, 'topic', {durable: true});
+  const queue = process.env.MAIN_STOCK_ALERT_QUEUE as string;
+  (await channel).deleteQueue(queue);
+  (await channel).assertQueue(queue, {durable: true});
+  (await channel).bindQueue(queue, topicExchange, routingKey);
+  (await channel).consume(queue, async (msg) => {
     if(msg) {
       const contentAsString = msg.content.toString();
       const contentAsJSON = JSON.parse(contentAsString);
-      logger.info(contentAsJSON);
+      logger.info("Received:", contentAsJSON);
       await insertProductsInChunks(contentAsJSON);
-      logger.info(`Consumer Logs are ${JSON.stringify(contentAsJSON)}`);
-      channel.ack(msg);
+      logger.info(`Processed message: ${JSON.stringify(contentAsJSON)}`);
+      (await channel).ack(msg);
     }
-  })
+  }, {noAck: false})
 }
 
 async function insertProductsInChunks(products: Product[], chunkSize = 500) {

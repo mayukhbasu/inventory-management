@@ -89,14 +89,15 @@ export class StockService{
         await channel.assertQueue(dlQueue, {durable: true});
         await channel.bindQueue(dlQueue, dlx, dlRoutingKey);
         await channel.assertExchange(topicExchange, 'topic', {durable: true});
-        await channel.assertQueue(process.env.MAIN_QUEUE as string, {
+        await channel.deleteQueue(process.env.MAIN_STOCK_ALERT_QUEUE as string);
+        await channel.assertQueue(process.env.MAIN_STOCK_ALERT_QUEUE as string, {
           durable: true,
           arguments: {
             'x-dead-letter-exchange': dlx, // Specify the DLX
             'x-dead-letter-routing-key': dlRoutingKey // DL routing key 
           }
         });
-        await channel.bindQueue(process.env.MAIN_QUEUE as string, topicExchange, routingKey);
+        await channel.bindQueue(process.env.MAIN_STOCK_ALERT_QUEUE as string, topicExchange, routingKey);
         const message = JSON.stringify(alertStocks);
         logger.info(`Publishing message to ${topicExchange} with routing key ${routingKey}: ${message}`);
         channel.publish(topicExchange, routingKey, Buffer.from(message));
