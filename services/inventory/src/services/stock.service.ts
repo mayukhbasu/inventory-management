@@ -89,7 +89,6 @@ export class StockService{
         await channel.assertQueue(dlQueue, {durable: true});
         await channel.bindQueue(dlQueue, dlx, dlRoutingKey);
         await channel.assertExchange(topicExchange, 'topic', {durable: true});
-        await channel.deleteQueue(process.env.MAIN_STOCK_ALERT_QUEUE as string);
         await channel.assertQueue(process.env.MAIN_STOCK_ALERT_QUEUE as string, {
           durable: true,
           arguments: {

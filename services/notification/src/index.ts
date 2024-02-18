@@ -1,6 +1,7 @@
 import express from 'express';
 import bodyParser from "body-parser";
 import { startConsumer } from './consumers/stockAlertConsumer';
+import logger from './logger';
 
 
 const app = express();
@@ -15,8 +16,8 @@ app.listen(port, async () => {
   console.log(`Application starting on port ${port}...`);
     try {
         await startConsumer();
-        console.log("Consumer started.");
+        logger.info("Consumer started.");
     } catch (error) {
-        console.error("Failed to start the consumer:", error);
+        logger.error("Failed to start the consumer:", error);
     }
 });
