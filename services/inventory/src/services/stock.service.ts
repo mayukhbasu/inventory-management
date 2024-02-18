@@ -74,30 +74,36 @@ export class StockService{
       const result = await query('select p.name, s.quantity from products p join stocklevels s on p.productId = s.productId where s.quantity < p.lowstockthreshold');
       const alertStocks = result.rows;
       logger.info(alertStocks);
+      
       if(alertStocks.length > 0) {
-        const connection = await amqp.connect(process.env.AMQP_URL|| 'amqp://localhost');
+        const connection = await amqp.connect(process.env.AMQP_URL || 'amqp://localhost');
         const channel = await connection.createChannel();
+
+        const topicExchange = process.env.TOPIC_EXCHANGE as string;
+        const routingKey = 'stock.alert.new';
         const dlx = process.env.DEAD_LETTER_EXCHANGE as string;
         const dlQueue = process.env.DEAD_LETTER_QUEUE as string;
-        const dlRoutingKey = 'error'; // Dead Letter Routing Key
+        const dlRoutingKey = 'error';
+
         await channel.assertExchange(dlx, 'direct', {durable: true});
         await channel.assertQueue(dlQueue, {durable: true});
         await channel.bindQueue(dlQueue, dlx, dlRoutingKey);
-
-        const queue = process.env.MAIN_QUEUE as string;
-        await channel.assertQueue(queue, {
-          durable: false,
+        await channel.assertExchange(topicExchange, 'topic', {durable: true});
+        await channel.assertQueue(process.env.MAIN_QUEUE as string, {
+          durable: true,
           arguments: {
             'x-dead-letter-exchange': dlx, // Specify the DLX
-            'x-dead-letter-routing-key': dlRoutingKey // Optional: Specify a routing key for the DLX
+            'x-dead-letter-routing-key': dlRoutingKey // DL routing key 
           }
         });
+        await channel.bindQueue(process.env.MAIN_QUEUE as string, topicExchange, routingKey);
         const message = JSON.stringify(alertStocks);
-        logger.info(message);
-        channel.sendToQueue(queue, Buffer.from(message));
+        logger.info(`Publishing message to ${topicExchange} with routing key ${routingKey}: ${message}`);
+        channel.publish(topicExchange, routingKey, Buffer.from(message));
         await channel.close();
         await connection.close();
       }
+
       return alertStocks;
     } catch(err) {
       logger.error(err)

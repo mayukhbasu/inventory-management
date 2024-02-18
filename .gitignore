@@ -2,3 +2,4 @@ services/inventory/node_modules/
 services/inventory/dist/
 node_modules/
 .env
+services/rabbitMQ/
