@@ -33,7 +33,7 @@ export async function processMessageAndSendEmail(msg: any, channel: any) {
     };
 
     try {
-      // await sgMail.send(emailMsg);
+      await sgMail.send(emailMsg);
       logger.info('Email sent with the Excel attachment');
     } catch (error) {
       logger.error(error);

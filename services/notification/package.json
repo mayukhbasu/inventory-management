@@ -1,10 +1,11 @@
 {
   "name": "notification",
-  "version": "1.0.0",
+  "version": "1.0.11",
   "description": "",
   "main": "index.js",
   "scripts": {
     "dev": "ts-node-dev --inspect --respawn --transpile-only src/index.ts",
+    "deploy": "node deploy.js",
     "build": "tsc"
   },
   "keywords": [],
@@ -19,6 +20,8 @@
     "exceljs": "^4.4.0",
     "express": "^4.18.2",
     "pg": "^8.11.3",
+    "semver": "^7.6.0",
+    "shelljs": "^0.8.5",
     "typescript": "^5.3.3"
   },
   "devDependencies": {

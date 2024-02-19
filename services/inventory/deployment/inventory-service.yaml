@@ -3,10 +3,10 @@ kind: Service
 metadata:
   name: inventory-microservice
 spec:
-  type: NodePort
+  type: ClusterIP  # Changed from NodePort to ClusterIP
   ports:
   - port: 3000
     targetPort: 3000
-    nodePort: 30001
+    # nodePort: 30001  # This line is removed for ClusterIP services
   selector:
     app: inventory-microservice

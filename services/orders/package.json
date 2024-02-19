@@ -1,10 +1,12 @@
 {
   "name": "orders",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node-dev --inspect --respawn --transpile-only src/index.ts"
+    "dev": "ts-node-dev --inspect --respawn --transpile-only src/index.ts",
+    "deploy": "node deploy.js",
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",
@@ -16,6 +18,8 @@
     "axios": "^1.6.7",
     "dotenv": "^16.4.4",
     "express": "^4.18.2",
+    "semver": "^7.6.0",
+    "shelljs": "^0.8.5",
     "typescript": "^5.3.3"
   },
   "devDependencies": {

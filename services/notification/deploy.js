@@ -11,15 +11,15 @@ const newVersion = semver.inc(currentVersion, 'patch');
 versionData.version = newVersion;
 
 fs.writeFileSync(versionFilePath, JSON.stringify(versionData, null, 2), 'utf-8');
-shell.exec(`docker build -t inventory:${newVersion} .`);
+shell.exec(`docker build -t notification:${newVersion} .`);
 
 // Tag the image for Docker Hub
-shell.exec(`docker tag inventory:${newVersion} rishiwhite11/inventory:${newVersion}`);
-shell.exec(`docker tag inventory:${newVersion} rishiwhite11/inventory:latest`);
+shell.exec(`docker tag notification:${newVersion} rishiwhite11/notification:${newVersion}`);
+shell.exec(`docker tag notification:${newVersion} rishiwhite11/notification:latest`);
 
 // Push both tags to Docker Hub
-shell.exec(`docker push rishiwhite11/inventory:${newVersion}`);
-shell.exec(`docker push rishiwhite11/inventory:latest`);
+shell.exec(`docker push rishiwhite11/notification:${newVersion}`);
+shell.exec(`docker push rishiwhite11/notification:latest`);
 
 console.log(`Deployed version ${newVersion} to Docker Hub.`);
 shell.cd('deployment');

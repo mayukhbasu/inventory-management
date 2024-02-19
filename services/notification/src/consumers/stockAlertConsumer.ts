@@ -15,7 +15,7 @@ type Product = {
 
 export async function startConsumer() {
   logger.info("Started executing inside startConsumer");
-  const connection = await amqp.connect(process.env.AMQP_URL || 'amqp://localhost');
+  const connection = await amqp.connect(process.env.AMQP_URL as string || 'amqp://localhost');
   const channel = connection.createChannel();
   const topicExchange = process.env.TOPIC_EXCHANGE as string;
   const routingKey = 'stock.alert.#';

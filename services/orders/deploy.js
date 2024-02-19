@@ -8,18 +8,18 @@ const versionData = JSON.parse(fs.readFileSync(versionFilePath, 'utf-8'));
 let currentVersion = versionData.version;
 
 const newVersion = semver.inc(currentVersion, 'patch');
-versionData.version = newVersion;
+versionData.version = '1.0.3';
 
 fs.writeFileSync(versionFilePath, JSON.stringify(versionData, null, 2), 'utf-8');
-shell.exec(`docker build -t inventory:${newVersion} .`);
+shell.exec(`docker build -t orders:${newVersion} .`);
 
 // Tag the image for Docker Hub
-shell.exec(`docker tag inventory:${newVersion} rishiwhite11/inventory:${newVersion}`);
-shell.exec(`docker tag inventory:${newVersion} rishiwhite11/inventory:latest`);
+shell.exec(`docker tag orders:${newVersion} rishiwhite11/orders:${newVersion}`);
+shell.exec(`docker tag orders:${newVersion} rishiwhite11/orders:latest`);
 
 // Push both tags to Docker Hub
-shell.exec(`docker push rishiwhite11/inventory:${newVersion}`);
-shell.exec(`docker push rishiwhite11/inventory:latest`);
+shell.exec(`docker push rishiwhite11/orders:${newVersion}`);
+shell.exec(`docker push rishiwhite11/orders:latest`);
 
 console.log(`Deployed version ${newVersion} to Docker Hub.`);
 shell.cd('deployment');
