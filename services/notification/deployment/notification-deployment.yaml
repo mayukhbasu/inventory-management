@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notifications-microservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: notifications-microservice
+  template:
+    metadata:
+      labels:
+        app: notifications-microservice
+    spec:
+      containers:
+      - name: notifications-microservice
+        image: rishiwhite11/notifications:latest
+        ports:
+        - containerPort: 3001

@@ -5,6 +5,8 @@ metadata:
 spec:
   ports:
   - port: 5432
+    targetPort: 5432
+    nodePort: 30000  # Specify the desired node port (optional)
   selector:
     app: postgres
-  type: ClusterIP
+  type: NodePort  # Change the service type to NodePort

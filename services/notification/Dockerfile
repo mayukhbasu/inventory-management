@@ -26,7 +26,7 @@ COPY . .
 RUN yarn build
 
 # Your application listens on port 3000 by default
-EXPOSE 3000
+EXPOSE 3001
 
 # Define the command to run your app
-CMD [ "node", "dist/index.js" ] 
+CMD [ "node", "dist/index.js" ] # Adjust "dist/app.js" as necessary
