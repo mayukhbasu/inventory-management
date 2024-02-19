@@ -1,12 +1,12 @@
-import express, { Request, Response } from 'express';
+import express from 'express';
+import bodyParser from "body-parser";
+import orderRouter from './routes/order-route';
+
 
 const app = express();
-const PORT = 3002;
-
-app.get('/', (req: Request, res: Response) => {
-  res.send('Hello World!');
-});
-
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+const port = process.env.PORT || 3002;
+app.use(bodyParser.json());
+app.use('/', orderRouter);
+app.listen(port, () => {
+  console.log(`Service A listening at http://localhost:${port}`);
 });
