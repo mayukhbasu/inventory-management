@@ -1,4 +1,6 @@
 import { Request, Response } from "express";
+import axios from 'axios';
+
 import { OrderService } from "../services/order.service";
 import logger from "../logger";
 
@@ -20,10 +22,32 @@ export class OrderController {
       const {customerId, items} = req.body;
       const result = await OrderService.orders(customerId, items);
       logger.info(`Result is ${result}`);
+      for(let item of result.items) {
+        try {
+          await this.updateInventory(item.productId, item.quantity);
+        } catch(error) {
+          res.status(500).json({ status: "error", message: error });
+          return;
+        }
+      }
       res.json({ status: "success", message: result });
     } catch(error) {
       logger.error(error);
       res.status(500).json({ status: "error", message: error });
+    }
+  }
+
+  static async updateInventory(productID: number, quantity: number, type = 'order'): Promise<void> {
+    const inventoryUpdateURL = `http://localhost:3000/inventory/update-stock`;
+    try {
+      const response = await axios.post(inventoryUpdateURL, {
+        productID: productID,
+        quantity: quantity,
+        type: type
+      });
+      logger.info(`Stock updated for productId ${productID}: ${response.data.message}`);
+    } catch(error) {
+      throw error;
     }
   }
 }
