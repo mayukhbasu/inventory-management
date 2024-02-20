@@ -3,10 +3,9 @@ kind: Service
 metadata:
   name: order-microservice
 spec:
-  type: NodePort
+  type: ClusterIP
   ports:
-  - port: 3002
+  - port: 300
     targetPort: 3002
-    nodePort: 30010
   selector:
     app: order-microservice

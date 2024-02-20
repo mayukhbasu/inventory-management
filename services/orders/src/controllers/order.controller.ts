@@ -38,7 +38,9 @@ export class OrderController {
   }
 
   static async updateInventory(productID: number, quantity: number, type = 'order'): Promise<void> {
-    const inventoryUpdateURL = `http://localhost:3000/inventory/update-stock`;
+    const inventoryUpdateURL =  process.env.ENVIRONMENT === 'KUBERNETES' ?
+    'http://inventory-microservice:3000/inventory/update-stock': 
+    'http://localhost:3000/inventory/update-stock';
     try {
       const response = await axios.post(inventoryUpdateURL, {
         productID: productID,

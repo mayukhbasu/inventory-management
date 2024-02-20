@@ -34,6 +34,7 @@ export class OrderService {
       const orderItemsValues = items.flatMap(item => [orderId, item.productId, item.quantity, item.priceAtPurchase]);
   
       await pool.query(orderItemsQuery, orderItemsValues);
+      
       return {
         orderId,
         orderDate: new Date().toISOString(),
@@ -44,6 +45,7 @@ export class OrderService {
         })),
       }
     } catch(err) {
+      logger.error(err);
       throw err;
     }
   }

@@ -76,7 +76,7 @@ export class StockService{
       logger.info(alertStocks);
       
       if(alertStocks.length > 0) {
-        const connection = await amqp.connect('amqp://rabbitmq:5672');
+        const connection = await amqp.connect(process.env.AMQP_URL as string || 'amqp://localhost');
         
         const channel = await connection.createChannel();
 
