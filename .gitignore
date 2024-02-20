@@ -2,5 +2,4 @@ services/inventory/node_modules/
 services/inventory/dist/
 services/notification/src/utils/ProductListBelowThreshold.xlsx
 node_modules/
-.env
 services/rabbitMQ/
