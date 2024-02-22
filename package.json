@@ -4,6 +4,9 @@
   "main": "index.js",
   "license": "MIT",
   "private": true,
+  "scripts": {
+    "start": "concurrently \"yarn --cwd services/inventory dev\""
+  },
   "workspaces": [
     "services/*",
     "libraries/*"

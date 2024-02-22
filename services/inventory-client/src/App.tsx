@@ -1,14 +1,21 @@
 import './App.css';
-import { Typography, Button } from '@mui/material';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import LoginPage from './containers/LoginPage/LoginPage';
+import HomePage from './containers/HomePage/HomePage';
+
 
 function App() {
   return (
-    <div className="App">
-     <div>
-      <Typography variant="h3" color="primary">Hello, Material-UI!</Typography>
-      <Button variant="contained" color="primary">Click me</Button>
-    </div>
-    </div>
+    <Router>
+      {/* <Route render={({location}) => (
+        location.pathname !== '/' && location.pathname !== '/login' && <Navbar/>
+      )}></Route> */}
+      
+      <Switch>
+        <Route path="/" exact component={LoginPage} />  
+        <Route path="/home" exact component={HomePage} />  
+      </Switch>
+    </Router>
   );
 }
 

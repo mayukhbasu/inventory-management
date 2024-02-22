@@ -1,0 +1,40 @@
+/* LoginPage.module.css */
+
+.loginContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+}
+
+.title {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.googleButton {
+  background-color: #4285f4;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  transition: background-color 0.3s ease;
+}
+
+.googleButton:hover {
+  background-color: #357ae8;
+}
+
+.googleButton:focus {
+  outline: none;
+}
+
+.googleButton:active {
+  background-color: #3367d6;
+}

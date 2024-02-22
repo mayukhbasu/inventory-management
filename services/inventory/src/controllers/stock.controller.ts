@@ -34,7 +34,7 @@ export class StockController {
         res.status(500).json({ status: "error", message: 'Internal server error' });
       }
     }
-
+    
     static async getAlertStockLevels(req: Request, res: Response): Promise<void> {
       logger.info('Started executing getAlertStockLevels function inside StockController');
       try {
