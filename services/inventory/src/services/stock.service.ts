@@ -120,11 +120,12 @@ export class StockService{
     }
   }
 
-  static async getAllProductsFromInventory(): Promise<Product[]> {
+  static async getAllProductsFromInventory(page: number, pageSize: number): Promise<Product[]> {
     logger.info('Inside get all products function inside stock service');
     try {
-      const getAllproductsSQL = 'SELECT * from products';
-      const result = await query(getAllproductsSQL);
+      const offset = (page - 1) * pageSize;
+      const getAllproductsSQL = 'SELECT * from products order by productId limit $1 offset $2';
+      const result = await query(getAllproductsSQL, [pageSize, offset]);
       logger.info(result.rows);
       return result.rows;
     } catch(err) {

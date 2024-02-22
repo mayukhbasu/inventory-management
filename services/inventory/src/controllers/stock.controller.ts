@@ -51,7 +51,9 @@ export class StockController {
     static async getAllProducts(req: Request, res: Response): Promise<void> {
       logger.info('Started executing getAllProducts function inside StockController');
       try {
-        const result = await StockService.getAllProductsFromInventory();
+        const page = parseInt(req.query.page as string) || 1;
+        const pageSize = parseInt(req.query.pageSize as string) || 10;
+        const result = await StockService.getAllProductsFromInventory(page, pageSize);
         logger.info(`Result is ${result}`)
         res.json({ status: "success", message: result }); 
       } catch(err) {
