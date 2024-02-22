@@ -39,7 +39,6 @@ export class StockController {
       logger.info('Started executing getAlertStockLevels function inside StockController');
       try {
         const result = await StockService.getAlertNewStock();
-        StockService.getAllProductsFromInventory()
         logger.info(`Result is ${result}`);
         res.json({ status: "success", message: result }); 
       } catch(err) {
