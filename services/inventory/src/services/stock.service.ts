@@ -13,6 +13,14 @@ type productStock = {
   currentStock: number
 }
 
+type Product = {
+  productid: number,
+  name: string,
+  description: string,
+  lowstockthreshold: number,
+  price: number
+}
+
 export class StockService{
   
   static async updateStock(productID: string, quantity: number, type: stockType): Promise<string> {
@@ -110,6 +118,19 @@ export class StockService{
       logger.error(err)
       throw new Error(`An error occurred: ${err}`);
     }
+  }
+
+  static async getAllProductsFromInventory(): Promise<Product[]> {
+    logger.info('Inside get all products function inside stock service');
+    try {
+      const getAllproductsSQL = 'SELECT * from products';
+      const result = await query(getAllproductsSQL);
+      logger.info(result.rows);
+      return result.rows;
+    } catch(err) {
+      throw err;
+    }
+    
   }
   
 }

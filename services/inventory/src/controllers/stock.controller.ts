@@ -39,11 +39,24 @@ export class StockController {
       logger.info('Started executing getAlertStockLevels function inside StockController');
       try {
         const result = await StockService.getAlertNewStock();
+        StockService.getAllProductsFromInventory()
         logger.info(`Result is ${result}`);
         res.json({ status: "success", message: result }); 
       } catch(err) {
         logger.error('Error in getAlertStockLevels:', err);
         res.status(500).json({ status: "error", message: 'Internal server error' });
+      }
+    }
+
+    static async getAllProducts(req: Request, res: Response): Promise<void> {
+      logger.info('Started executing getAllProducts function inside StockController');
+      try {
+        const result = await StockService.getAllProductsFromInventory();
+        logger.info(`Result is ${result}`)
+        res.json({ status: "success", message: result }); 
+      } catch(err) {
+        logger.error('Error in getAlertStockLevels:', err);
+        res.status(500).json({ status: "error", message: err});
       }
     }
 }
