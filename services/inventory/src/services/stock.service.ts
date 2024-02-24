@@ -35,16 +35,18 @@ export class StockService{
         let sql = '';
         if (type === 'order') {
             sql = 'UPDATE StockLevels SET Quantity = Quantity - $2 WHERE ProductID = $1';
+            
         } else if (type === 'receipt') {
             sql = 'UPDATE StockLevels SET Quantity = Quantity + $2 WHERE ProductID = $1';
+            
         }
-        logger.debug(sql);
+        logger.info(sql);
 
         await client.query(sql, [productID, quantity]);
 
         const checkSQL = 'SELECT quantity FROM StockLevels WHERE ProductID = $1';
         const checkRes = await client.query(checkSQL, [productID]);
-
+        logger.info(checkRes);
         if (checkRes.rows.length > 0 && checkRes.rows[0].quantity < 0) {
             // Rollback if quantity goes below zero
             await client.query('ROLLBACK');
@@ -133,5 +135,7 @@ export class StockService{
     }
     
   }
+
+  static async addItemsTocart()
   
 }

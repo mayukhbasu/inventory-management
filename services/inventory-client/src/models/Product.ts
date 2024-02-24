@@ -5,3 +5,9 @@ export interface Product {
   lowStockThreshold: number;
   price: string; // Assuming price is stored as a string for formatting purposes
 }
+
+export interface FetchProductsResponse {
+  loading: boolean;
+  data: Product[];
+  error: any;
+}

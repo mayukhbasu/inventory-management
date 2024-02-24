@@ -27,7 +27,7 @@ export const fetchProducts = (page: number) => {
   return async (dispatch: Dispatch<FetchProductsType>) => {
     dispatch(fetchProductsRequest());
    try {
-    const response = await axios.get(`http://localhost:3000/inventory/products?page=${page}`);
+    const response = await axios.get(`http://localhost:8080/inventory/products?page=${page}`, {withCredentials: true});
      dispatch(fetchProductsSuccess(response.data));
    } catch(error:any) {
      dispatch(fetchProductsFailure(error)); 

@@ -51,7 +51,7 @@ export class StockController {
       logger.info('Started executing getAllProducts function inside StockController');
       try {
         const page = parseInt(req.query.page as string) || 1;
-        const pageSize = parseInt(req.query.pageSize as string) || 10;
+        const pageSize = parseInt(req.query.pageSize as string) || 12;
         const result = await StockService.getAllProductsFromInventory(page, pageSize);
         logger.info(`Result is ${result}`)
         res.json({ status: "success", message: result }); 
@@ -59,5 +59,9 @@ export class StockController {
         logger.error('Error in getAlertStockLevels:', err);
         res.status(500).json({ status: "error", message: err});
       }
+    }
+
+    static async addItemsTocart(req: Request, res: Response): Promise<void> {
+      
     }
 }
