@@ -1,5 +1,5 @@
 import { Card, CardContent, Typography, CardActions, Button } from '@mui/material';
-import React, { FC } from 'react';
+import { FC, memo } from 'react';
 
 export type ProductInfo = {
   name: string,
@@ -15,7 +15,7 @@ type ProductCardProps = {
   onSelectProduct: (product: ProductInfo, quantity: number) => void
 }
 
-const ProductCard: FC<ProductCardProps> = ({name, price, description, quantity, onSelectProduct}) => {
+const ProductCard: FC<ProductCardProps> = memo(({name, price, description, quantity, onSelectProduct}) => {
 
   const handleDecrement = () => {
     if(quantity > 0)
@@ -45,6 +45,6 @@ const ProductCard: FC<ProductCardProps> = ({name, price, description, quantity, 
       </CardActions>
     </Card>
   );
-};
+});
 
 export default ProductCard;

@@ -1,10 +1,24 @@
-import { pool, query } from "../config/db";
-import logger from "../logger";
+
+
 import * as amqp from 'amqplib';
+import { createClient } from 'redis';
 import dotenv from "dotenv";
+import { promisify } from 'util'
+
+import logger from "../logger";
+import { pool, query } from "../config/db";
 
 dotenv.config();
 
+const redisClient = createClient();
+
+redisClient.on('connect', () => {
+  console.log('Redis client connected');
+});
+
+redisClient.on('error', (err) => {
+  console.error('Redis Client Error', err);
+});
 
 type stockType = 'order' | 'receipt';
 
@@ -19,6 +33,13 @@ type Product = {
   description: string,
   lowstockthreshold: number,
   price: number
+}
+
+type CachedProduct = {
+  currentUser: string,
+  selectedProducts: {
+    [productID: string]: number
+  }
 }
 
 export class StockService{
@@ -135,7 +156,35 @@ export class StockService{
     }
     
   }
+  static async addItemsTocart(cachedProduct: CachedProduct): Promise<boolean> {
+    logger.info('cached product is ', cachedProduct);
+    const redisClient = createClient({
+      // Specify Redis connection options here if needed
+    });
 
-  static async addItemsTocart()
+    // Listen for error events on the Redis client
+    redisClient.on('error', (err) => logger.error('Redis Client Error', err));
+
+    try {
+      // Connect to Redis
+      await redisClient.connect();
+
+      const userId = cachedProduct.currentUser;
+      const serializedData = JSON.stringify(cachedProduct);
+      logger.info(serializedData);
+
+      // Store serialized data in Redis with the user ID included in the key
+      await redisClient.set(`cachedProducts:${userId}`, serializedData);
+
+      logger.info(`Items added to cart for user ${userId}`);
+      return true;
+    } catch (error) {
+      logger.error(`Error adding items to cart: ${error}`);
+      throw new Error(`Error adding items to cart: ${error}`);
+    } finally {
+      // Ensure Redis client is properly closed
+      await redisClient.disconnect();
+    }
+  }
   
 }

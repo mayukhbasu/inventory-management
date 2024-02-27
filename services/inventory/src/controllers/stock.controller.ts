@@ -62,6 +62,16 @@ export class StockController {
     }
 
     static async addItemsTocart(req: Request, res: Response): Promise<void> {
-      
+      const {currentUser, selectedProducts} = req.body;
+      try {
+        const cachedProduct = {currentUser, selectedProducts};
+        logger.info('cached product inside the controller is ', cachedProduct);
+        const result = await StockService.addItemsTocart(cachedProduct);
+        logger.info(`Result is ${result}`);
+        res.json({ status: "success", message: result }); 
+      } catch(err) {
+        logger.error(`An error occurred while adding data in cache  ${err}`);
+        res.status(500).json({ status: "error", message: err});
+      }
     }
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import Grid from '@mui/material/Grid';
 
@@ -19,6 +19,7 @@ const CustomGrid = styled(Grid)({
 const HomePage = () => {
   const dispatch = useDispatch();
   const [selectedProducts, setSelectedProducts] = useState<{ [key: string]: number }>({});
+  const currentUser = useSelector((state: RootState) => state.userInfo.data.googleId);
   const [currentPage, setCurrentPage] = useState(1);
   const products = useSelector((state: RootState) => state.products.data);
 
@@ -37,10 +38,17 @@ const HomePage = () => {
   const nextPage = () => setCurrentPage(prevPage => prevPage + 1);
   const prevPage = () => setCurrentPage(prevPage => prevPage - 1);
 
+  const addToCart = () => {
+    console.log(JSON.stringify({selectedProducts, currentUser}));
+  }
 
   return (
     <>
-      
+      <Grid item xs={10} style={{ textAlign: 'right' , marginTop:'20px', marginRight:'20px'}}>
+          <Button variant="contained" color="secondary" onClick={addToCart}>
+            Add To cart
+          </Button>
+        </Grid>
        <CustomGrid container  spacing={2}>
     {
       
