@@ -74,4 +74,21 @@ export class StockController {
         res.status(500).json({ status: "error", message: err});
       }
     }
+
+    static async getItemsFromcart(req: Request, res: Response): Promise<void> {
+      const {currentUser} = req.params;
+      try {
+        const cachedProduct = await StockService.getItemsFromCache(currentUser);
+        if(cachedProduct) {
+          logger.info(`Cached product retrieved for user ${currentUser}`);
+          res.json({ status: "success", data: cachedProduct });
+        } else {
+          logger.info(`No cached product found for user ${currentUser}`);
+          res.status(404).json({ status: "not_found", message: "No cached product found for the given user ID." });
+        }
+      } catch(error) {
+        logger.error(`An error occurred while retrieving data from cache: ${error}`);
+        res.status(500).json({ status: "error", message: "An error occurred while retrieving data from cache." });
+      }
+    }
 }

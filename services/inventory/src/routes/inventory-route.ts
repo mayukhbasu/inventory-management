@@ -6,6 +6,7 @@ const router = Router();
 
 router.post('/update-stock',(req: Request, res: Response) => StockController.updateStock(req, res));
 router.post('/addToCart',(req: Request, res: Response) => StockController.addItemsTocart(req, res));
+router.get('/getItemsFromCart/:currentUser',(req: Request, res: Response) => StockController.getItemsFromcart(req, res));
 
 router.get('/products',checkCache,(req: Request, res: Response) => StockController.getAllProducts(req, res));
 router.get('/stock-level',(req: Request, res: Response) => StockController.getStockLevels(req, res));

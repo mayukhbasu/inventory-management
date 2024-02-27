@@ -186,5 +186,28 @@ export class StockService{
       await redisClient.disconnect();
     }
   }
+
+  static async getItemsFromCache(userId: string): Promise<CachedProduct | null> {
+    const redisClient = createClient({});
+    redisClient.on('error', (err) => logger.error(err));
+    try {
+      await redisClient.connect();
+      const serializedData = await redisClient.get(`cachedProducts:${userId}`);
+      if(serializedData) {
+        const cachedProduct = JSON.parse(serializedData) as CachedProduct;
+        logger.info(`Retrieved cached product for user ${userId}`);
+        return cachedProduct;
+      } else {
+        logger.info(`No cached product found for user ${userId}`);
+        return null;
+      }
+    } catch(error) {
+      logger.error(`Error retrieving cached product: ${error}`);
+      throw new Error(`Error retrieving cached product: ${error}`);
+    } finally {
+      await redisClient.disconnect()
+    }
+    
+  }
   
 }
