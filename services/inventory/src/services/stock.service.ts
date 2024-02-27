@@ -3,7 +3,6 @@
 import * as amqp from 'amqplib';
 import { createClient } from 'redis';
 import dotenv from "dotenv";
-import { promisify } from 'util'
 
 import logger from "../logger";
 import { pool, query } from "../config/db";
@@ -11,14 +10,6 @@ import { pool, query } from "../config/db";
 dotenv.config();
 
 const redisClient = createClient();
-
-redisClient.on('connect', () => {
-  console.log('Redis client connected');
-});
-
-redisClient.on('error', (err) => {
-  console.error('Redis Client Error', err);
-});
 
 type stockType = 'order' | 'receipt';
 

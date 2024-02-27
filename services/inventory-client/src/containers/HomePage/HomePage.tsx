@@ -1,6 +1,8 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import Grid from '@mui/material/Grid';
+import { useSnackbar } from 'notistack';
+
 
 
 import { useDispatch } from '../../hooks/useDispatch';
@@ -9,6 +11,7 @@ import { RootState } from '../../redux/reducers';
 import ProductCard, { ProductInfo } from '../../components/ProductCard/ProductCard';
 import styled from '@emotion/styled';
 import { Button } from '@mui/material';
+import { addProductsToCart } from '../../redux/actions/add-to-cart-actions';
 
 
 const CustomGrid = styled(Grid)({
@@ -19,6 +22,7 @@ const CustomGrid = styled(Grid)({
 const HomePage = () => {
   const dispatch = useDispatch();
   const [selectedProducts, setSelectedProducts] = useState<{ [key: string]: number }>({});
+  const { enqueueSnackbar } = useSnackbar();
   const currentUser = useSelector((state: RootState) => state.userInfo.data.googleId);
   const [currentPage, setCurrentPage] = useState(1);
   const products = useSelector((state: RootState) => state.products.data);
@@ -39,7 +43,12 @@ const HomePage = () => {
   const prevPage = () => setCurrentPage(prevPage => prevPage - 1);
 
   const addToCart = () => {
-    console.log(JSON.stringify({selectedProducts, currentUser}));
+    dispatch(addProductsToCart({selectedProducts, currentUser})).then(response => {
+      enqueueSnackbar('Items added to cart was successful!', { variant: 'success' });
+      setSelectedProducts({});
+    }, err => {
+      enqueueSnackbar('Items added to cart has failed.', { variant: 'error' });
+    })
   }
 
   return (
